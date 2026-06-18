@@ -84,7 +84,7 @@ sudo pacman -S hostapd dnsmasq iw iptables iproute2
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/wifihotspot.git
+git clone https://github.com/sriram32005/wifi-hotspot.git
 cd wifihotspot
 chmod +x wifi-hotspot.sh
 ```
