@@ -1,0 +1,10 @@
+{
+  "uuid": "wifi-hotspot-manager@sriram32005.github.io",
+  "name": "WiFi Hotspot Manager",
+  "description": "Manage WiFi hotspots from the top bar. Create, start, stop hotspots, view connected devices, edit SSID & password — all without a terminal. Uses NetworkManager, no root required.",
+  "shell-version": ["45", "46", "47", "48", "49", "50"],
+  "version": 1,
+  "url": "https://github.com/sriram32005/wifi-hotspot",
+  "gettext-domain": "wifi-hotspot-manager@sriram32005.github.io",
+  "settings-schema": "org.gnome.shell.extensions.wifi-hotspot-manager"
+}

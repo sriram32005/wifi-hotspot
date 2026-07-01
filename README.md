@@ -1,22 +1,32 @@
-# 📡 WiFi + Hotspot Manager
+# 📡 WiFi Hotspot Manager
 
-> **Run a WiFi hotspot and stay connected to the internet — simultaneously — on a single wireless card.**
+> **Run a WiFi hotspot and stay connected to the internet — simultaneously — from your GNOME top bar.**
 
-A lightweight Bash script that turns your Linux laptop into a WiFi access point while keeping your existing WiFi connection alive. Designed specifically for the **Intel AX201** (`iwlwifi`) wireless card, but works with any card that supports concurrent `managed` + `AP` interface combinations.
+A WiFi hotspot manager for Linux with both a **CLI tool** and a **GNOME Shell extension**. Create a hotspot from your laptop's WiFi connection with one click, view connected devices, edit settings — all without opening a terminal.
+
+Designed for the **Intel AX201** (`iwlwifi`), but works with any card supporting concurrent `managed` + `AP` interfaces.
 
 ---
 
 ## ✨ Features
 
-- **Simultaneous WiFi + Hotspot** — Share your laptop's WiFi connection without an ethernet cable
-- **Auto-channel matching** — Automatically detects your WiFi channel and locks the hotspot to the same channel (required by Intel AX201 firmware)
-- **NetworkManager-safe** — Automatically configures NetworkManager to leave the AP interface alone, preventing "Device or resource busy" errors
-- **Robust cleanup** — Multi-step interface teardown with retries ensures no stale interfaces are left behind
-- **NAT with iptables** — Full internet sharing via IP masquerading
-- **DHCP server** — Built-in DHCP via `dnsmasq` for automatic IP assignment to connected devices
-- **WPA2 security** — Password-protected hotspot with WPA2-PSK/CCMP encryption
-- **Status dashboard** — View connected clients, signal strength, and connectivity at a glance
-- **Clean start/stop** — One command to start, one to stop, full cleanup guaranteed
+### GNOME Shell Extension (GUI)
+- **Top bar hotspot icon** — instantly see if your hotspot is active (green) or inactive (grey)
+- **One-click start/stop** — start or stop the hotspot right from the dropdown menu
+- **Live status** — view SSID, password, channel, band, gateway, and connected WiFi network
+- **Password management** — show/hide password with toggle, copy to clipboard
+- **Connected devices** — real-time count and list with MAC addresses and signal strength
+- **Editable settings** — change SSID and password from the menu before starting
+- **Auto-refresh** — status updates every 5 seconds while the menu is open
+- **Seamless auth** — passwordless operation via Polkit for `wheel` group users
+
+### CLI Tool
+- **Simultaneous WiFi + Hotspot** — share your laptop's WiFi without an ethernet cable
+- **Auto-channel matching** — locks the hotspot to your WiFi's channel (required by Intel AX201 firmware)
+- **NetworkManager-safe** — automatically prevents NM from interfering with the AP interface
+- **Robust cleanup** — multi-step interface teardown with retries
+- **NAT + DHCP** — full internet sharing with automatic IP assignment
+- **WPA2 security** — password-protected with WPA2-PSK/CCMP
 
 ---
 
@@ -24,22 +34,16 @@ A lightweight Bash script that turns your Linux laptop into a WiFi access point 
 
 ### Hardware
 
-Your wireless card must support **concurrent `managed` + `AP` mode**. You can verify this with:
+Your wireless card must support **concurrent `managed` + `AP` mode**:
 
 ```bash
 iw phy phy0 info | grep -A 6 "valid interface combinations"
 ```
 
-Look for a line like:
-
+Look for:
 ```
 * #{ managed } <= 1, #{ AP, P2P-client, P2P-GO } <= 1
 ```
-
-This confirms your card can run a client connection and an access point at the same time.
-
-> [!IMPORTANT]
-> The Intel AX201 requires **both interfaces to operate on the same channel** (`#channels <= 1` in the AP combo). The script handles this automatically by reading your current WiFi channel and configuring the hotspot to match.
 
 ### Tested Hardware
 
@@ -49,190 +53,127 @@ This confirms your card can run a client connection and an access point at the s
 | Intel AX200 | `iwlwifi` | ✅ | Yes |
 | Intel AC 9560 | `iwlwifi` | ✅ | Yes |
 
-### Software Dependencies
+### Software Requirements
 
-| Package | Purpose |
-|---------|---------|
-| `hostapd` | Runs the access point (802.11 AP daemon) |
-| `dnsmasq` | Provides DHCP and DNS for connected clients |
-| `iw` | Creates and manages wireless interfaces |
-| `iptables` | Sets up NAT for internet sharing |
-| `iproute2` | The `ip` command for interface/address management |
+| Requirement | Purpose |
+|-------------|---------|
+| **GNOME Shell 45+** | Required for the extension (tested up to GNOME 50) |
+| `hostapd` | Runs the access point daemon |
+| `dnsmasq` | DHCP and DNS for connected clients |
+| `iw` | Wireless interface management |
+| `iptables` | NAT for internet sharing |
+| `iproute2` | Interface/address management (`ip` command) |
+| `polkit` | Passwordless privilege escalation |
 
-**Install on Fedora:**
-
-```bash
-sudo dnf install hostapd dnsmasq iw iptables iproute
-```
-
-**Install on Ubuntu/Debian:**
+**Install dependencies:**
 
 ```bash
-sudo apt install hostapd dnsmasq iw iptables iproute2
-```
+# Fedora
+sudo dnf install hostapd dnsmasq iw iptables iproute polkit
 
-**Install on Arch:**
+# Ubuntu/Debian
+sudo apt install hostapd dnsmasq iw iptables iproute2 policykit-1
 
-```bash
-sudo pacman -S hostapd dnsmasq iw iptables iproute2
+# Arch
+sudo pacman -S hostapd dnsmasq iw iptables iproute2 polkit
 ```
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Installation
 
-### 1. Clone the repository
+### One-Command Install
 
 ```bash
 git clone https://github.com/sriram32005/wifi-hotspot.git
-cd wifihotspot
-chmod +x wifi-hotspot.sh
+cd wifi-hotspot
+chmod +x install.sh
+./install.sh
 ```
 
-### 2. Connect to a WiFi network first
+The installer will:
+1. ✅ Install `wifi-hotspot.sh` and `wifi-hotspot-status.sh` to `/usr/local/bin/`
+2. ✅ Install Polkit policy and rules (passwordless for `wheel` group)
+3. ✅ Install the GNOME Shell extension to `~/.local/share/gnome-shell/extensions/`
+4. ✅ Enable the extension
 
-Make sure your laptop is connected to a WiFi network before starting the hotspot:
+### Activate the Extension
 
-```bash
-nmcli device wifi connect "YourNetwork" password "YourPassword"
-```
+After installation, restart GNOME Shell:
+- **Wayland:** Log out and log back in
+- **X11:** Press `Alt+F2`, type `r`, press Enter
 
-### 3. Start the hotspot
+The **📡 hotspot icon** will appear in your top bar!
 
-```bash
-# With default SSID ("MyHotspot") and password ("hotspot123")
-sudo ./wifi-hotspot.sh start
-
-# With custom SSID and password
-sudo ./wifi-hotspot.sh start "MyHotspot" "SuperSecure123"
-```
-
-### 4. Stop the hotspot
-
-```bash
-sudo ./wifi-hotspot.sh stop
-```
-
-### 5. Check status
-
-```bash
-sudo ./wifi-hotspot.sh status
-```
+> [!TIP]
+> You can also manage the extension from the **GNOME Extensions** app or via CLI:
+> ```bash
+> gnome-extensions enable wifi-hotspot@sriram
+> gnome-extensions disable wifi-hotspot@sriram
+> ```
 
 ---
 
-## 📖 Usage
+## 🖥️ Usage
 
-```
-Usage: sudo ./wifi-hotspot.sh {start|stop|status} [SSID] [PASSWORD]
+### GNOME Extension (Recommended)
 
-  start [SSID] [PASSWORD]  Start hotspot (default: MyHotspot / hotspot123)
-  stop                     Stop hotspot and clean up
-  status                   Show current hotspot status
+1. **Click the hotspot icon** (📡) in the top bar
+2. **View status** — see if the hotspot is active, SSID, password, connected devices
+3. **Edit settings** — change SSID and password in the Settings section
+4. **Click "Start Hotspot"** — the hotspot starts with your settings
+5. **Click "Stop Hotspot"** — clean shutdown
 
-  Examples:
-    sudo ./wifi-hotspot.sh start
-    sudo ./wifi-hotspot.sh start MyNetwork SecurePass123
-    sudo ./wifi-hotspot.sh stop
-    sudo ./wifi-hotspot.sh status
-```
+**Menu sections:**
+| Section | Description |
+|---------|-------------|
+| Status Header | Active/Inactive with colored indicator |
+| Info | SSID, password (show/hide + copy), channel, gateway, internet source |
+| Connected Devices | Count badge + device list with MAC addresses and signal |
+| Settings | Editable SSID and password fields |
+| Actions | Start/Stop toggle + Refresh button |
 
-### Sample Output — `start`
+### CLI Tool
 
-```
-╔══════════════════════════════════════════════════════╗
-║          WiFi + Hotspot Manager (Intel AX201)        ║
-╚══════════════════════════════════════════════════════╝
+The CLI tool is also available for terminal use or scripting:
 
-[✓] WiFi interface: wlp0s20f3
-[✓] Connected to: MyHomeNetwork
-[✓] Current channel: 4
-[✓] Band: 2.4 GHz
+```bash
+# Connect to WiFi first
+nmcli device wifi connect "YourNetwork" password "YourPassword"
 
-[→] Creating AP interface ap0 on channel 4...
-[→] Configuring NetworkManager to ignore ap0...
-[✓] AP interface ap0 is up with IP 192.168.12.1
-[→] Configuring hostapd...
-[→] Configuring dnsmasq...
-[→] Enabling IP forwarding...
-[→] Setting up NAT (iptables)...
-[→] Starting dnsmasq...
-[✓] dnsmasq started (PID: 12345)
-[→] Starting hostapd...
-[✓] hostapd started (PID: 12346)
+# Start with defaults (SSID: MyHotspot, Password: hotspot123)
+sudo wifi-hotspot.sh start
 
-[✓] WiFi still connected to: MyHomeNetwork ✓
+# Start with custom SSID and password
+sudo wifi-hotspot.sh start "MyHotspot" "SuperSecure123"
 
-╔══════════════════════════════════════════════════════╗
-║              Hotspot is ACTIVE!                      ║
-╠══════════════════════════════════════════════════════╣
-║  SSID:      MyHotspot
-║  Password:  hotspot123
-║  Channel:   4
-║  Gateway:   192.168.12.1
-║  Internet:  via wlp0s20f3 → MyHomeNetwork
-╠══════════════════════════════════════════════════════╣
-║  Stop with: sudo ./wifi-hotspot.sh stop
-╚══════════════════════════════════════════════════════╝
-```
+# Check status
+sudo wifi-hotspot.sh status
 
-### Sample Output — `status`
-
-```
-╔══════════════════════════════════════════════════════╗
-║          WiFi + Hotspot Manager (Intel AX201)        ║
-╚══════════════════════════════════════════════════════╝
-
-[✓] Hotspot is ACTIVE
-
-  WiFi Client:
-    Interface: wlp0s20f3
-    SSID:      MyHomeNetwork
-    Channel:   4
-
-  Hotspot (AP):
-    Interface: ap0
-    IP:        192.168.12.1
-    SSID:      MyHotspot
-
-  Processes:
-    hostapd: running (PID: 12345)
-    dnsmasq: running (PID: 12346)
-
-  Connected Clients:
-    Count: 2
-
-  Internet:
-    Connectivity: OK
+# Stop
+sudo wifi-hotspot.sh stop
 ```
 
 ---
 
 ## ⚙️ Configuration
 
-All configuration is done via variables at the top of the script. Edit these to customize your setup:
+### Default Settings
+
+Edit the defaults at the top of `wifi-hotspot.sh`:
 
 ```bash
-# ── Network Identity ─────────────────────────────────
 DEFAULT_SSID="MyHotspot"          # Hotspot name
-DEFAULT_PASSWORD="hotspot123"         # WPA2 password (min 8 chars)
-
-# ── AP Interface ─────────────────────────────────────
-AP_INTERFACE="ap0"                    # Virtual AP interface name
-AP_IP="192.168.12.1"                  # Gateway IP for the hotspot
-AP_SUBNET="192.168.12.0/24"          # Subnet for hotspot clients
-
-# ── DHCP ─────────────────────────────────────────────
-AP_DHCP_START="192.168.12.50"         # First IP to assign
-AP_DHCP_END="192.168.12.150"          # Last IP to assign
-AP_DHCP_LEASE="12h"                   # DHCP lease duration
-
-# ── DNS ──────────────────────────────────────────────
-DNS_SERVERS="8.8.8.8,8.8.4.4"        # DNS servers for clients
+DEFAULT_PASSWORD="hotspot123"     # WPA2 password (min 8 chars)
+AP_INTERFACE="ap0"                # Virtual AP interface name
+AP_IP="192.168.12.1"              # Gateway IP
+AP_DHCP_START="192.168.12.50"     # DHCP range start
+AP_DHCP_END="192.168.12.150"      # DHCP range end
+DNS_SERVERS="8.8.8.8,8.8.4.4"    # DNS for clients
 ```
 
 > [!TIP]
-> If you have another local network on `192.168.12.x`, change `AP_IP` and the DHCP range to a different subnet like `192.168.50.x` to avoid conflicts.
+> When using the GNOME extension, you can override the SSID and password directly from the menu without editing the script.
 
 ---
 
@@ -244,181 +185,184 @@ DNS_SERVERS="8.8.8.8,8.8.4.4"        # DNS servers for clients
 ┌─────────────────────────────────────────────────────────┐
 │                     Your Laptop                          │
 │                                                          │
-│  ┌─────────────────┐         ┌─────────────────┐        │
-│  │   wlp0s20f3     │         │      ap0         │        │
-│  │   (managed)     │         │      (AP)        │        │
-│  │                 │         │                  │        │
-│  │  Connected to   │  NAT    │  Hotspot SSID    │        │
-│  │  home WiFi      │◄───────►│  192.168.12.1    │        │
-│  │                 │iptables │                  │        │
-│  └────────┬────────┘         └────────┬─────────┘        │
-│           │                           │                  │
-└───────────┼───────────────────────────┼──────────────────┘
-            │                           │
-            ▼                           ▼
-     ┌──────────────┐          ┌──────────────────┐
-     │  WiFi Router │          │  Client Devices   │
-     │  (Internet)  │          │  (Phone, Tablet)  │
-     └──────────────┘          └──────────────────┘
+│  ┌──────────────┐                                        │
+│  │ GNOME Shell  │ ← Extension (top bar icon + menu)      │
+│  │  Extension   │                                        │
+│  └──────┬───────┘                                        │
+│         │ pkexec (polkit)                                 │
+│         ▼                                                │
+│  ┌──────────────┐                                        │
+│  │ wifi-hotspot │ ← CLI script (manages everything)      │
+│  │    .sh       │                                        │
+│  └──────┬───────┘                                        │
+│         │                                                │
+│  ┌──────┴──────────────────────────────────┐             │
+│  │                                         │             │
+│  ▼                                         ▼             │
+│  ┌─────────────────┐    ┌─────────────────┐              │
+│  │   wlp0s20f3     │    │      ap0         │             │
+│  │   (managed)     │    │      (AP)        │             │
+│  │  Connected to   │NAT │  Hotspot SSID    │             │
+│  │  home WiFi      │◄──►│  192.168.12.1    │             │
+│  └────────┬────────┘    └────────┬─────────┘             │
+│           │                      │                       │
+└───────────┼──────────────────────┼───────────────────────┘
+            │                      │
+            ▼                      ▼
+     ┌──────────────┐     ┌──────────────────┐
+     │  WiFi Router │     │  Client Devices   │
+     │  (Internet)  │     │  (Phone, Tablet)  │
+     └──────────────┘     └──────────────────┘
 ```
 
-### Step-by-Step Startup Process
+### Extension → Script Communication
 
-1. **Detect WiFi interface** — Finds the active `managed` mode interface (e.g., `wlp0s20f3`)
-2. **Read current channel** — Gets the channel your WiFi client is on (e.g., channel 4)
-3. **Configure NetworkManager** — Creates a drop-in config (`/etc/NetworkManager/conf.d/99-wifi-hotspot-unmanaged.conf`) telling NM to never touch `ap0`
-4. **Clean stale interfaces** — If `ap0` exists from a previous run, robustly removes it (NM unmanage → bring down → flush → delete with retries)
-5. **Create AP interface** — Adds a virtual `__ap` type interface on the same physical radio
-6. **Set MAC address** — Assigns a unique MAC (base MAC + 1) to avoid conflicts
-7. **Assign IP** — Gives `ap0` the gateway IP (`192.168.12.1/24`)
-8. **Configure hostapd** — Generates config for the access point daemon (same channel, WPA2)
-9. **Configure dnsmasq** — Generates config for DHCP server
-10. **Enable IP forwarding** — Sets `net.ipv4.ip_forward=1`
-11. **Setup NAT** — Adds iptables MASQUERADE rules to share internet
-12. **Start services** — Launches `dnsmasq` (DHCP) and `hostapd` (AP)
-13. **Verify connection** — Confirms the WiFi client connection survived
-
-### Key Constraint: Same Channel
-
-The Intel AX201 firmware only supports **one channel at a time** when running concurrent `managed` + `AP` interfaces. This means:
-
-- The hotspot **must** operate on the same channel as your WiFi connection
-- If your WiFi router is on channel 4, the hotspot will also be on channel 4
-- Changing your WiFi network may require restarting the hotspot
-
-This is a hardware/firmware limitation, not a software one.
-
----
-
-## 🔧 Troubleshooting
-
-### "Device or resource busy" (RTNETLINK error)
-
-**Cause:** A stale `ap0` interface exists from a previous run, or NetworkManager has grabbed it.
-
-**Fix:**
-
-```bash
-# Stop any running hotspot first
-sudo ./wifi-hotspot.sh stop
-
-# If that doesn't work, manually clean up:
-sudo nmcli device set ap0 managed no
-sudo ip link set ap0 down
-sudo ip link delete ap0
-
-# Then start again
-sudo ./wifi-hotspot.sh start
-```
-
-### hostapd fails to start
-
-**Cause:** Usually a channel mismatch or another process is using the interface.
-
-**Debug:**
-
-```bash
-# Check the hostapd log
-cat /tmp/wifi-hotspot-hostapd.log
-
-# Common fixes:
-# 1. Make sure you're connected to WiFi first
-# 2. Kill any other hostapd instances
-sudo pkill hostapd
-```
-
-### WiFi disconnects when starting hotspot
-
-**Cause:** The AP was created on a different channel than the client.
-
-**Fix:** This shouldn't happen with this script (it auto-matches channels), but if it does:
-
-```bash
-# Reconnect to WiFi
-nmcli device connect wlp0s20f3
-
-# Restart the hotspot
-sudo ./wifi-hotspot.sh stop
-sudo ./wifi-hotspot.sh start
-```
-
-### Connected devices can't access the internet
-
-**Cause:** IP forwarding or NAT rules are not active.
-
-**Check:**
-
-```bash
-# Verify IP forwarding
-cat /proc/sys/net/ipv4/ip_forward
-# Should output: 1
-
-# Verify NAT rules
-sudo iptables -t nat -L POSTROUTING -v
-# Should show a MASQUERADE rule for your WiFi interface
-```
-
-### dnsmasq fails: "address already in use"
-
-**Cause:** Another dnsmasq or DNS service is already bound to the interface.
-
-**Fix:**
-
-```bash
-# Find and kill conflicting dnsmasq
-sudo pkill -f "dnsmasq.*ap0"
-
-# Check if systemd-resolved is conflicting
-sudo systemctl stop systemd-resolved
-
-# Retry
-sudo ./wifi-hotspot.sh start
-```
+1. **Status checks:** Extension runs `pkexec wifi-hotspot-status.sh` which outputs JSON
+2. **Start/Stop:** Extension runs `pkexec wifi-hotspot.sh start|stop` via `Gio.Subprocess`
+3. **Auth:** Polkit rules grant passwordless access to `wheel` group users
+4. **Auto-refresh:** `GLib.timeout_add_seconds` polls every 5 seconds while menu is open
 
 ---
 
 ## 📂 File Structure
 
 ```
-wifihotspot/
-├── wifi-hotspot.sh          # Main script
-└── README.md                # This file
+wifi-hotspot/
+├── wifi-hotspot.sh              # Main CLI script
+├── wifi-hotspot-status.sh       # JSON status helper for the extension
+├── install.sh                   # Automated installer
+├── uninstall.sh                 # Clean uninstaller
+├── README.md                    # This file
+├── LICENSE                      # MIT License
+├── gnome-extension/
+│   └── wifi-hotspot@sriram/
+│       ├── metadata.json        # Extension metadata
+│       ├── extension.js         # Extension logic
+│       └── stylesheet.css       # Extension styling
+└── polkit/
+    ├── com.github.sriram.wifi-hotspot.policy   # Polkit action definitions
+    └── 10-wifi-hotspot.rules                    # Polkit rules (wheel → passwordless)
+```
 
-# Runtime files (auto-generated, cleaned on stop):
-/tmp/wifi-hotspot-hostapd.conf       # hostapd configuration
-/tmp/wifi-hotspot-dnsmasq.conf       # dnsmasq configuration
-/tmp/wifi-hotspot-hostapd.log        # hostapd log
-/tmp/wifi-hotspot-dnsmasq.log        # dnsmasq log
-/tmp/wifi-hotspot/                   # PID directory
-├── hostapd.pid                      # hostapd process ID
-├── dnsmasq.pid                      # dnsmasq process ID
-└── wifi_iface                       # Saved WiFi interface name
+### Installed Files
 
-# Persistent config (created once):
-/etc/NetworkManager/conf.d/99-wifi-hotspot-unmanaged.conf
+| File | Location | Purpose |
+|------|----------|---------|
+| `wifi-hotspot.sh` | `/usr/local/bin/` | Main script |
+| `wifi-hotspot-status.sh` | `/usr/local/bin/` | Status JSON helper |
+| Polkit policy | `/usr/share/polkit-1/actions/` | Action definitions |
+| Polkit rules | `/etc/polkit-1/rules.d/` | Passwordless auth |
+| Extension | `~/.local/share/gnome-shell/extensions/wifi-hotspot@sriram/` | GNOME extension |
+| NM config | `/etc/NetworkManager/conf.d/99-wifi-hotspot-unmanaged.conf` | Created at runtime |
+
+---
+
+## 🔧 Troubleshooting
+
+### Extension not showing in top bar
+
+```bash
+# Check if extension is installed
+gnome-extensions list | grep wifi-hotspot
+
+# Check if enabled
+gnome-extensions info wifi-hotspot@sriram
+
+# Check for errors
+journalctl -f -o cat /usr/bin/gnome-shell 2>/dev/null | grep -i hotspot
+```
+
+### "Device or resource busy" error
+
+```bash
+# Stop any running hotspot
+sudo wifi-hotspot.sh stop
+
+# Manual cleanup if needed
+sudo nmcli device set ap0 managed no
+sudo ip link set ap0 down
+sudo ip link delete ap0
+
+# Restart
+sudo wifi-hotspot.sh start
+```
+
+### Polkit authentication dialog appears
+
+If you're getting a password prompt instead of seamless operation:
+
+```bash
+# Verify you're in the wheel group
+groups | grep wheel
+
+# Check Polkit rules are installed
+ls -la /etc/polkit-1/rules.d/10-wifi-hotspot.rules
+cat /usr/share/polkit-1/actions/com.github.sriram.wifi-hotspot.policy
+
+# Re-run installer if needed
+./install.sh
+```
+
+### hostapd fails to start
+
+```bash
+# Check the log
+cat /tmp/wifi-hotspot-hostapd.log
+
+# Ensure WiFi is connected first
+nmcli device wifi connect "YourNetwork" password "YourPassword"
+
+# Kill stale processes
+sudo pkill hostapd
+sudo wifi-hotspot.sh start
+```
+
+### Connected devices can't access internet
+
+```bash
+# Verify IP forwarding
+cat /proc/sys/net/ipv4/ip_forward   # Should output: 1
+
+# Verify NAT rules
+sudo iptables -t nat -L POSTROUTING -v   # Should show MASQUERADE
 ```
 
 ---
 
-## 🔒 Security Notes
+## 🗑️ Uninstallation
 
-- The default password `hotspot123` is **not secure**. Always use a strong password in production:
-  ```bash
-  sudo ./wifi-hotspot.sh start "MyHotspot" "$(openssl rand -base64 12)"
-  ```
-- The hotspot uses **WPA2-PSK** with CCMP cipher — this is reasonably secure for personal use
-- Connected clients can see each other on the `192.168.12.x` subnet
-- The script requires **root access** (`sudo`) because it manipulates network interfaces, iptables, and system services
+```bash
+chmod +x uninstall.sh
+./uninstall.sh
+```
+
+This removes:
+- Scripts from `/usr/local/bin/`
+- GNOME extension
+- Polkit policy and rules
+- NetworkManager configuration
+- All temp files
 
 ---
 
 ## ⚠️ Limitations
 
-- **Single channel only** — The hotspot must be on the same channel as your WiFi connection (Intel AX201 firmware constraint)
-- **Reboot clears the hotspot** — The hotspot does not persist across reboots (by design, for safety)
-- **One hotspot at a time** — Only one AP interface can be active
-- **No 5 GHz guarantee** — If your WiFi router uses 5 GHz, the hotspot will also be 5 GHz (some older client devices may not support it)
-- **Performance** — Sharing a single radio between client and AP modes will reduce throughput compared to dedicated hardware
+- **Single channel only** — hotspot must be on the same channel as your WiFi (Intel firmware constraint)
+- **Reboot clears hotspot** — does not persist across reboots (by design)
+- **One hotspot at a time** — only one AP interface can be active
+- **5 GHz depends on router** — if your router uses 5 GHz, the hotspot will too
+- **Performance** — sharing a single radio reduces throughput vs dedicated hardware
+- **GNOME Shell only** — extension requires GNOME Shell 45+ (no KDE/XFCE support)
+
+---
+
+## 🔒 Security Notes
+
+- Default password `hotspot123` is **not secure** — always use a strong password
+- The hotspot uses **WPA2-PSK** with CCMP cipher
+- Polkit rules grant passwordless root access **only** to `wifi-hotspot.sh` and `wifi-hotspot-status.sh`
+- Only users in the `wheel` group get passwordless access
+- Connected clients can see each other on the `192.168.12.x` subnet
 
 ---
 
@@ -440,5 +384,5 @@ This project is open source and available under the [MIT License](LICENSE).
 
 <p align="center">
   <b>Made with ❤️ for Linux WiFi sharing</b><br>
-  <i>Because Windows' Mobile Hotspot shouldn't be the only option.</i>
+  <i>Now with a proper GUI — because not everything needs a terminal.</i>
 </p>

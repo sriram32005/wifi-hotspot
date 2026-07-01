@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.wifi-hotspot-manager"
+          path="/org/gnome/shell/extensions/wifi-hotspot-manager/">
+
+    <key name="default-ssid" type="s">
+      <default>'MyHotspot'</default>
+      <summary>Default Hotspot SSID</summary>
+      <description>The default SSID (network name) used when creating a new hotspot.</description>
+    </key>
+
+    <key name="default-password" type="s">
+      <default>'hotspot123'</default>
+      <summary>Default Hotspot Password</summary>
+      <description>The default WPA password for the hotspot. Must be at least 8 characters.</description>
+    </key>
+
+    <key name="wifi-band" type="s">
+      <default>'bg'</default>
+      <summary>WiFi Band</summary>
+      <description>The WiFi band to use: 'bg' for 2.4 GHz, 'a' for 5 GHz, or 'auto' to let the system decide.</description>
+    </key>
+
+    <key name="wifi-interface" type="s">
+      <default>''</default>
+      <summary>WiFi Interface</summary>
+      <description>The WiFi interface to use (e.g. wlan0). Leave empty for auto-detection.</description>
+    </key>
+
+    <key name="refresh-interval" type="i">
+      <default>5</default>
+      <summary>Auto-Refresh Interval</summary>
+      <description>How often (in seconds) to refresh the hotspot status when the menu is open.</description>
+      <range min="2" max="30"/>
+    </key>
+
+    <key name="connection-name" type="s">
+      <default>'Hotspot'</default>
+      <summary>NM Connection Name</summary>
+      <description>The NetworkManager connection profile name used for the hotspot.</description>
+    </key>
+
+  </schema>
+</schemalist>

@@ -1,0 +1,8 @@
+{
+  "uuid": "wifi-hotspot@sriram",
+  "name": "WiFi Hotspot Manager",
+  "description": "Control your WiFi hotspot from the top bar. Start/stop hotspot, view status, edit SSID & password, see connected devices — all without opening a terminal.",
+  "shell-version": ["45", "46", "47", "48", "49", "50"],
+  "url": "https://github.com/sriram32005/wifi-hotspot",
+  "version": 1
+}

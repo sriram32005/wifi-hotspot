@@ -1,0 +1,262 @@
+/* ============================================================================
+ * WiFi Hotspot Manager — GNOME Shell Extension Stylesheet
+ * ============================================================================ */
+
+/* ── Panel Icon ───────────────────────────────────────────────────────────── */
+
+.hotspot-icon-active {
+  color: #57e389;
+}
+
+.hotspot-icon-inactive {
+  color: #c0bfbc;
+}
+
+/* ── Menu Container ───────────────────────────────────────────────────────── */
+
+.hotspot-menu {
+  min-width: 320px;
+}
+
+/* ── Status Header ────────────────────────────────────────────────────────── */
+
+.hotspot-status-header {
+  padding: 12px 16px;
+  spacing: 10px;
+}
+
+.hotspot-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 99px;
+}
+
+.hotspot-status-dot-active {
+  background-color: #57e389;
+  box-shadow: 0 0 6px rgba(87, 227, 137, 0.6);
+}
+
+.hotspot-status-dot-inactive {
+  background-color: #f66151;
+}
+
+.hotspot-status-text {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.hotspot-status-text-active {
+  color: #57e389;
+}
+
+.hotspot-status-text-inactive {
+  color: #f66151;
+}
+
+/* ── Info Section ─────────────────────────────────────────────────────────── */
+
+.hotspot-info-section {
+  padding: 4px 0;
+}
+
+.hotspot-info-row {
+  padding: 4px 16px;
+  spacing: 8px;
+}
+
+.hotspot-info-label {
+  font-weight: bold;
+  min-width: 90px;
+  color: #c0bfbc;
+  font-size: 0.95em;
+}
+
+.hotspot-info-value {
+  color: #ffffff;
+  font-size: 0.95em;
+}
+
+.hotspot-info-value-highlight {
+  color: #99c1f1;
+  font-weight: bold;
+  font-size: 0.95em;
+}
+
+.hotspot-password-value {
+  color: #ffffff;
+  font-size: 0.95em;
+  font-family: monospace;
+}
+
+/* ── Connected Devices ────────────────────────────────────────────────────── */
+
+.hotspot-devices-header {
+  padding: 6px 16px;
+  spacing: 8px;
+}
+
+.hotspot-devices-title {
+  font-weight: bold;
+  font-size: 0.95em;
+}
+
+.hotspot-devices-count {
+  background-color: rgba(153, 193, 241, 0.2);
+  border-radius: 10px;
+  padding: 1px 8px;
+  color: #99c1f1;
+  font-size: 0.85em;
+  font-weight: bold;
+}
+
+.hotspot-device-row {
+  padding: 3px 24px;
+  spacing: 6px;
+}
+
+.hotspot-device-icon {
+  color: #c0bfbc;
+}
+
+.hotspot-device-mac {
+  font-family: monospace;
+  font-size: 0.9em;
+  color: #c0bfbc;
+}
+
+.hotspot-no-devices {
+  padding: 6px 24px;
+  color: #9a9996;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+/* ── Settings Section ─────────────────────────────────────────────────────── */
+
+.hotspot-settings-section {
+  padding: 4px 0;
+}
+
+.hotspot-settings-title {
+  padding: 6px 16px;
+  font-weight: bold;
+  font-size: 0.95em;
+  color: #c0bfbc;
+}
+
+.hotspot-entry-row {
+  padding: 4px 16px;
+  spacing: 8px;
+}
+
+.hotspot-entry-label {
+  font-weight: bold;
+  min-width: 80px;
+  color: #c0bfbc;
+  font-size: 0.95em;
+}
+
+.hotspot-entry {
+  border-radius: 6px;
+  padding: 4px 8px;
+  min-width: 180px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  font-size: 0.95em;
+}
+
+.hotspot-entry:focus {
+  border-color: rgba(153, 193, 241, 0.5);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Action Buttons ───────────────────────────────────────────────────────── */
+
+.hotspot-actions {
+  padding: 8px 16px;
+  spacing: 8px;
+}
+
+.hotspot-btn-start {
+  border-radius: 8px;
+  padding: 8px 16px;
+  background-color: rgba(87, 227, 137, 0.15);
+  color: #57e389;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1em;
+}
+
+.hotspot-btn-start:hover {
+  background-color: rgba(87, 227, 137, 0.25);
+}
+
+.hotspot-btn-start:active {
+  background-color: rgba(87, 227, 137, 0.35);
+}
+
+.hotspot-btn-stop {
+  border-radius: 8px;
+  padding: 8px 16px;
+  background-color: rgba(246, 97, 81, 0.15);
+  color: #f66151;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1em;
+}
+
+.hotspot-btn-stop:hover {
+  background-color: rgba(246, 97, 81, 0.25);
+}
+
+.hotspot-btn-stop:active {
+  background-color: rgba(246, 97, 81, 0.35);
+}
+
+.hotspot-btn-refresh {
+  border-radius: 8px;
+  padding: 6px 12px;
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #c0bfbc;
+  font-size: 0.9em;
+}
+
+.hotspot-btn-refresh:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+/* ── Password Toggle ──────────────────────────────────────────────────────── */
+
+.hotspot-password-toggle {
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #9a9996;
+}
+
+.hotspot-password-toggle:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Copy Button ──────────────────────────────────────────────────────────── */
+
+.hotspot-copy-btn {
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #9a9996;
+}
+
+.hotspot-copy-btn:hover {
+  color: #99c1f1;
+  background-color: rgba(153, 193, 241, 0.15);
+}
+
+/* ── Spinner/Loading ──────────────────────────────────────────────────────── */
+
+.hotspot-loading {
+  padding: 12px 16px;
+  color: #9a9996;
+  font-style: italic;
+}

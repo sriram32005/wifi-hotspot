@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/software/polkit/policyconfig-1.dtd">
+<policyconfig>
+
+  <vendor>WiFi Hotspot Manager</vendor>
+  <vendor_url>https://github.com/sriram32005/wifi-hotspot</vendor_url>
+
+  <!-- Action: Run wifi-hotspot.sh (start/stop) -->
+  <action id="com.github.sriram.wifi-hotspot.manage">
+    <description>Manage WiFi Hotspot</description>
+    <message>Authentication is required to manage the WiFi hotspot</message>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/local/bin/wifi-hotspot.sh</annotate>
+    <annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
+  </action>
+
+  <!-- Action: Run wifi-hotspot-status.sh (read-only) -->
+  <action id="com.github.sriram.wifi-hotspot.status">
+    <description>Check WiFi Hotspot Status</description>
+    <message>Authentication is required to check hotspot status</message>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/local/bin/wifi-hotspot-status.sh</annotate>
+    <annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
+  </action>
+
+</policyconfig>

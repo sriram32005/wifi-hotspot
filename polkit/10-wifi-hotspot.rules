@@ -1,0 +1,9 @@
+// Polkit rule: Allow wheel group to manage WiFi hotspot without password
+// This enables the GNOME Shell extension to start/stop the hotspot seamlessly.
+polkit.addRule(function(action, subject) {
+    if ((action.id === "com.github.sriram.wifi-hotspot.manage" ||
+         action.id === "com.github.sriram.wifi-hotspot.status") &&
+        subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+    }
+});
